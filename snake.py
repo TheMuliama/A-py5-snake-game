@@ -30,21 +30,25 @@ def draw_grid():
                 py5.square(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE)
 
 def setup():
-    global world_grid, player
+    global world_grid, player, tmp
     py5.size(WORLD_GRID_WIDTH * CELL_SIZE, WORLD_GRID_HEIGHT * CELL_SIZE)
     py5.background(0)
     py5.no_stroke()
     player = player_class()
     world_grid = clear_world_grid()
+    tmp = 50
 
 def draw():
     global player, world_grid, tmp
 
     py5.background(0)
-    world_grid = clear_world_grid()
-    player.set_speed(player.speed_x * -1, 0)
-    player.update_position()
-    world_grid[player.head_position_x][player.head_position_y] = 1
+    tmp = tmp - 1
+    if tmp < 0:
+        world_grid = clear_world_grid()
+        player.set_speed(player.speed_x * -1, 0)
+        player.update_position()
+        world_grid[player.head_position_x][player.head_position_y] = 1
+        tmp = 50
     
     draw_grid()
 
