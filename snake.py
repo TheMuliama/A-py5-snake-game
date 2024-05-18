@@ -29,6 +29,30 @@ def draw_grid():
             if world_grid[j][i] == 1:
                 py5.square(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE)
 
+def update_world():
+    global player, world_grid, tmp
+    world_grid = clear_world_grid()
+    player.update_position()
+    world_grid[player.head_position_x][player.head_position_y] = 1
+    tmp = 50
+
+def key_pressed():
+    global player, world_grid
+
+    if py5.key_code == py5.UP:
+        player.set_speed(0,-1)
+
+    if py5.key_code == py5.DOWN:
+        player.set_speed(0,1)
+
+    if py5.key_code == py5.RIGHT:
+        player.set_speed(1,0)
+
+    if py5.key_code == py5.LEFT:
+        player.set_speed(-1,0)
+
+
+
 def setup():
     global world_grid, player, tmp
     py5.size(WORLD_GRID_WIDTH * CELL_SIZE, WORLD_GRID_HEIGHT * CELL_SIZE)
@@ -42,13 +66,11 @@ def draw():
     global player, world_grid, tmp
 
     py5.background(0)
+
     tmp = tmp - 1
     if tmp < 0:
-        world_grid = clear_world_grid()
-        player.set_speed(player.speed_x * -1, 0)
-        player.update_position()
-        world_grid[player.head_position_x][player.head_position_y] = 1
-        tmp = 50
+        update_world()
+    
     
     draw_grid()
 
