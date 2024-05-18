@@ -33,7 +33,7 @@ def update_world():
     global player, world_grid, tmp
     world_grid = clear_world_grid()
     player.update_position()
-    world_grid[player.head_position_x][player.head_position_y] = 1
+    world_grid[player.head_position_y][player.head_position_x] = 1
     tmp = 50
 
 def key_pressed():
