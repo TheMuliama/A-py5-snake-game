@@ -2,7 +2,8 @@ import py5
 
 WORLD_GRID_HEIGHT = 20
 WORLD_GRID_WIDTH = 30
-CELL_SIZE = 10
+CELL_SIZE = 15
+GAME_COOLDOWN = 20
 
 class player_class():
     def __init__(self):
@@ -30,13 +31,13 @@ def draw_grid():
                 py5.square(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE)
 
 def update_world():
-    global player, world_grid, tmp
+    global player, world_grid, current_cooldown
     world_grid = clear_world_grid()
     player.update_position()
     if border_collision() == True:
         print("The player touched the border!!! \n")
     world_grid[player.head_position_y][player.head_position_x] = 1
-    tmp = 10
+    current_cooldown = GAME_COOLDOWN
 
 def key_pressed():
     global player, world_grid
@@ -77,21 +78,21 @@ def border_collision():
 
 
 def setup():
-    global world_grid, player, tmp
+    global world_grid, player, current_cooldown
     py5.size(WORLD_GRID_WIDTH * CELL_SIZE, WORLD_GRID_HEIGHT * CELL_SIZE)
     py5.background(0)
     py5.no_stroke()
     player = player_class()
     world_grid = clear_world_grid()
-    tmp = 10
+    current_cooldown = GAME_COOLDOWN
 
 def draw():
-    global player, world_grid, tmp
+    global player, world_grid, current_cooldown
 
     py5.background(0)
 
-    tmp = tmp - 1
-    if tmp < 0:
+    current_cooldown = current_cooldown - 1
+    if current_cooldown < 0:
         update_world()
     
     
