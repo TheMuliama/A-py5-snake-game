@@ -1,9 +1,12 @@
 import py5
+import random
 
-WORLD_GRID_HEIGHT = 20
+WORLD_GRID_HEIGHT = 30
 WORLD_GRID_WIDTH = 30
-CELL_SIZE = 15
-GAME_COOLDOWN = 20
+CELL_SIZE = 10
+GAME_COOLDOWN = 8
+
+apple_position = [0,0]
 
 class player_class():
     def __init__(self):
@@ -35,14 +38,23 @@ def clear_world_grid():
     return [[0 for j in range(WORLD_GRID_WIDTH)] for i in range(WORLD_GRID_HEIGHT)]
 
 def draw_grid():
+    py5.fill(250,100,100)
+    py5.square(apple_position[0]*CELL_SIZE, apple_position[1]*CELL_SIZE, CELL_SIZE)
+    py5.fill(255)
     for i in range(WORLD_GRID_WIDTH):
         for j in range(WORLD_GRID_HEIGHT):
             if world_grid[j][i] == 1:
                 py5.square(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE)
+    
 
 def update_world():
-    global player, world_grid, current_cooldown
+    global player, world_grid, current_cooldown, apple_position
     world_grid = clear_world_grid()
+
+    if [player.head_position_x, player.head_position_y] == apple_position:
+        player.body = player.body + player.body[-1]
+        apple_position = new_apple_position()
+
     player.update_position()
     
     if border_collision() == True:
@@ -92,26 +104,40 @@ def border_collision():
         is_colliding = True
     
     return is_colliding
-    
 
+def new_apple_position():
+    global world_grid, player
+    apple_position = [random.randint(0,WORLD_GRID_WIDTH-1), random.randint(0,WORLD_GRID_HEIGHT-1)]
+
+    for body_part in player.body:
+        
+        if apple_position == [body_part[0], body_part[1]]:
+            apple_position = new_apple_position()
+        if apple_position == [player.head_position_x, player.head_position_y]:
+            apple_position = new_apple_position()
+    print(f"new apple position: {apple_position}")
+    return apple_position
 
 def setup():
-    global world_grid, player, current_cooldown
+    global world_grid, player, current_cooldown, apple_position
     py5.size(WORLD_GRID_WIDTH * CELL_SIZE, WORLD_GRID_HEIGHT * CELL_SIZE)
     py5.background(0)
     py5.no_stroke()
     player = player_class()
     world_grid = clear_world_grid()
+    apple_position = new_apple_position()
     current_cooldown = GAME_COOLDOWN
 
 def draw():
-    global player, world_grid, current_cooldown
+    global player, world_grid, current_cooldown, apple_position
 
     py5.background(0)
 
     current_cooldown = current_cooldown - 1
     if current_cooldown < 0:
         update_world()
+        
+    
     
     
     draw_grid()
