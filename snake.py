@@ -52,7 +52,7 @@ def update_world():
     world_grid = clear_world_grid()
 
     if [player.head_position_x, player.head_position_y] == apple_position:
-        player.body = player.body + player.body[-1]
+        player.body = player.body + [player.body[-1]]
         apple_position = new_apple_position()
 
     player.update_position()
@@ -110,7 +110,7 @@ def new_apple_position():
     apple_position = [random.randint(0,WORLD_GRID_WIDTH-1), random.randint(0,WORLD_GRID_HEIGHT-1)]
 
     for body_part in player.body:
-        
+
         if apple_position == [body_part[0], body_part[1]]:
             apple_position = new_apple_position()
         if apple_position == [player.head_position_x, player.head_position_y]:
