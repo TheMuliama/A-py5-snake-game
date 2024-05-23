@@ -7,6 +7,7 @@ CELL_SIZE = 10
 GAME_COOLDOWN = 8
 
 apple_position = [0,0]
+is_playing = False
 
 class player_class():
     def __init__(self):
@@ -48,7 +49,7 @@ def draw_grid():
     
 
 def update_world():
-    global player, world_grid, current_cooldown, apple_position
+    global player, world_grid, current_cooldown, apple_position, is_playing
     world_grid = clear_world_grid()
 
     if [player.head_position_x, player.head_position_y] == apple_position:
@@ -59,9 +60,11 @@ def update_world():
     
     if border_collision() == True:
         print("The player touched the border!!! \n")
+        game_reset()
 
     if player.is_self_colliding():
         print("The player bumped into himself!!! \n")
+        game_reset()
 
     for body_part in player.body:
         world_grid[body_part[1]][body_part[0]] = 1
@@ -118,6 +121,14 @@ def new_apple_position():
     print(f"new apple position: {apple_position}")
     return apple_position
 
+def game_reset():
+    global player, world_grid, apple_position, is_playing
+
+    world_grid = clear_world_grid()
+    player = player_class()
+    apple_position = new_apple_position()
+    is_playing = False
+
 def setup():
     global world_grid, player, current_cooldown, apple_position
     py5.size(WORLD_GRID_WIDTH * CELL_SIZE, WORLD_GRID_HEIGHT * CELL_SIZE)
@@ -129,17 +140,34 @@ def setup():
     current_cooldown = GAME_COOLDOWN
 
 def draw():
-    global player, world_grid, current_cooldown, apple_position
+    global player, world_grid, current_cooldown, apple_position, is_playing
 
-    py5.background(0)
+    if is_playing == True:
+        py5.background(0)
 
-    current_cooldown = current_cooldown - 1
-    if current_cooldown < 0:
-        update_world()
+        current_cooldown = current_cooldown - 1
+        if current_cooldown < 0:
+            update_world()
+
+        draw_grid()
+
+    else:
+
+        py5.background(15)
+        py5.rect_mode(py5.CENTER)
+
+        py5.text_size(20)
+        py5.fill(255)
+        text_pos_x = (WORLD_GRID_WIDTH * CELL_SIZE) // 2
+        text_pos_y = (WORLD_GRID_HEIGHT * CELL_SIZE) // 2
+        py5.text_align(py5.CENTER)
+        py5.text("Click to play Snake! :)", text_pos_x, text_pos_y)
+
+        if py5.is_mouse_pressed:
+            is_playing = True
         
+        py5.rect_mode(py5.CORNER)
+
     
-    
-    
-    draw_grid()
 
 py5.run_sketch()
